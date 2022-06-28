@@ -44,7 +44,7 @@ namespace GecikmeBulma.Trade
             //pair.Broker.Profit = (double)json_data.pro;
             //pair.Broker.Latency = (double)json_data.ms;
 
-            if(pair.Active && pair.Broker.AutoTrade) arbitrageManager.FindArbitrage(pair);
+            if(pair.Broker.AutoTrade) arbitrageManager.FindArbitrage(pair);
 
             UI.UIManager.dataGridView1_UpdateItem(pair);
             //UI.UIManager.dataGridView2_UpdateItem(pair.Broker);

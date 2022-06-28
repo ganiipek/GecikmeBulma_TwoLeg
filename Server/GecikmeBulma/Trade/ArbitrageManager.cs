@@ -135,7 +135,7 @@ namespace GecikmeBulma.Trade
         {
             Arbitrage newArbitrage = CheckArbitrage(pair.Symbol);
 
-            if (newArbitrage != null && !arbitrages.Any(_arbitrage => (_arbitrage.AskPair.Id == newArbitrage.AskPair.Id && _arbitrage.BidPair.Id == newArbitrage.BidPair.Id) || (_arbitrage.AskPair.Id == newArbitrage.BidPair.Id && _arbitrage.BidPair.Id == newArbitrage.AskPair.Id))) // Add New Arbitrage
+            if (pair.Active && newArbitrage != null && !arbitrages.Any(_arbitrage => (_arbitrage.AskPair.Id == newArbitrage.AskPair.Id && _arbitrage.BidPair.Id == newArbitrage.BidPair.Id) || (_arbitrage.AskPair.Id == newArbitrage.BidPair.Id && _arbitrage.BidPair.Id == newArbitrage.AskPair.Id))) // Add New Arbitrage
             {
                 AddArbitrageInList(newArbitrage);
                 // TRADE
@@ -198,7 +198,7 @@ namespace GecikmeBulma.Trade
                         }
                         else // Arbitrage devam ediyor. Kontrol et.
                         {
-                            if(oldArbitrage.AskOrders.Count(_order => _order.Process == OrderProcess.IN_PROCESS) == oldArbitrage.CurrentPyramid && oldArbitrage.BidOrders.Count(_order => _order.Process == OrderProcess.IN_PROCESS) == oldArbitrage.CurrentPyramid)
+                            if(oldArbitrage.AskOrders.Count(_order => _order.Process >= OrderProcess.IN_PROCESS) == oldArbitrage.CurrentPyramid && oldArbitrage.BidOrders.Count(_order => _order.Process >= OrderProcess.IN_PROCESS) == oldArbitrage.CurrentPyramid)
                             {
                                 double profit = oldArbitrage.GetProfit();
 
@@ -218,7 +218,7 @@ namespace GecikmeBulma.Trade
                                     // kapanacak
                                     CloseArbitrage(oldArbitrage);
                                 }
-                                else if (oldArbitrage.AskOrders.All(_order => _order.Process == OrderProcess.IN_PROCESS) && oldArbitrage.BidOrders.All(_order => _order.Process == OrderProcess.IN_PROCESS))
+                                else if (pair.Active && oldArbitrage.AskOrders.All(_order => _order.Process == OrderProcess.IN_PROCESS) && oldArbitrage.BidOrders.All(_order => _order.Process == OrderProcess.IN_PROCESS))
                                 {
                                     if (oldArbitrage.CurrentPyramid < oldArbitrage.AskPair.Pyramiding)
                                     {
