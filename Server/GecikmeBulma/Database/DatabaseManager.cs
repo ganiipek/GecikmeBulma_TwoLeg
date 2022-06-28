@@ -333,7 +333,6 @@ namespace GecikmeBulma.Database
                         cmd.Parameters.AddWithValue("target_profit", arbitrage.TargetProfit);
 
                         cmd.ExecuteNonQuery();
-                        arbitrage.Id = (int)cmd.LastInsertedId;
                     }
                 }
             }, "DatabaseManager.AddArbitrage(Arbitrage)");
