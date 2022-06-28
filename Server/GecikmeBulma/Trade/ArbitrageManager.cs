@@ -192,58 +192,61 @@ namespace GecikmeBulma.Trade
                         }
                         else // Arbitrage devam ediyor. Kontrol et.
                         {
-                            double profit = oldArbitrage.GetProfit();
-
-                            //Console.WriteLine("\n"+ profit.ToString());
-                            //foreach (Order order in oldArbitrage.AskOrders)
-                            //{
-                            //    Console.WriteLine(order.ToString());
-                            //}
-                            //foreach (Order order in oldArbitrage.BidOrders)
-                            //{
-                            //    Console.WriteLine(order.ToString());
-                            //}
-
-                            
-                            if(profit >= oldArbitrage.AskPair.TP)
+                            if(oldArbitrage.AskOrders.Count(_order => _order.Process == OrderProcess.IN_PROCESS) == oldArbitrage.CurrentPyramid && oldArbitrage.BidOrders.Count(_order => _order.Process == OrderProcess.IN_PROCESS) == oldArbitrage.CurrentPyramid)
                             {
-                                // kapanacak
-                                CloseArbitrage(oldArbitrage);
-                            }
-                            else if (oldArbitrage.AskOrders.All(_order => _order.Process == OrderProcess.IN_PROCESS) && oldArbitrage.BidOrders.All(_order => _order.Process == OrderProcess.IN_PROCESS))
-                            {
-                                if (oldArbitrage.CurrentPyramid < oldArbitrage.AskPair.Pyramiding)
+                                double profit = oldArbitrage.GetProfit();
+
+                                //Console.WriteLine("\n"+ profit.ToString());
+                                //foreach (Order order in oldArbitrage.AskOrders)
+                                //{
+                                //    Console.WriteLine(order.ToString());
+                                //}
+                                //foreach (Order order in oldArbitrage.BidOrders)
+                                //{
+                                //    Console.WriteLine(order.ToString());
+                                //}
+
+
+                                if (profit >= oldArbitrage.AskPair.TP)
                                 {
-                                    if(CheckArbitrage(oldArbitrage.AskPair, oldArbitrage.BidPair, oldArbitrage.CurrentPyramid + 1) != null)
+                                    // kapanacak
+                                    CloseArbitrage(oldArbitrage);
+                                }
+                                else if (oldArbitrage.AskOrders.All(_order => _order.Process == OrderProcess.IN_PROCESS) && oldArbitrage.BidOrders.All(_order => _order.Process == OrderProcess.IN_PROCESS))
+                                {
+                                    if (oldArbitrage.CurrentPyramid < oldArbitrage.AskPair.Pyramiding)
                                     {
-                                        oldArbitrage.CurrentPyramid += 1;
+                                        if (CheckArbitrage(oldArbitrage.AskPair, oldArbitrage.BidPair, oldArbitrage.CurrentPyramid + 1) != null)
+                                        {
+                                            oldArbitrage.CurrentPyramid += 1;
 
-                                        Order askOrder = TradeManager.orderManager.CreateOrder(oldArbitrage.AskPair, oldArbitrage, OrderType.OP_BUY, oldArbitrage.AskPair.Volume, oldArbitrage.CurrentPyramid);
-                                        askOrder.SendedTime = DateTime.Now;
-                                        askOrder.SendedPrice = oldArbitrage.AskPair.Ask;
-                                        askOrder.Slippage = oldArbitrage.AskPair.Slippage;
-                                        askOrder.Process = OrderProcess.PREPARED;
+                                            Order askOrder = TradeManager.orderManager.CreateOrder(oldArbitrage.AskPair, oldArbitrage, OrderType.OP_BUY, oldArbitrage.AskPair.Volume, oldArbitrage.CurrentPyramid);
+                                            askOrder.SendedTime = DateTime.Now;
+                                            askOrder.SendedPrice = oldArbitrage.AskPair.Ask;
+                                            askOrder.Slippage = oldArbitrage.AskPair.Slippage;
+                                            askOrder.Process = OrderProcess.PREPARED;
 
-                                        Order bidOrder = TradeManager.orderManager.CreateOrder(oldArbitrage.BidPair, oldArbitrage, OrderType.OP_SELL, oldArbitrage.BidPair.Volume, oldArbitrage.CurrentPyramid);
-                                        bidOrder.SendedTime = DateTime.Now;
-                                        bidOrder.SendedPrice = oldArbitrage.BidPair.Bid;
-                                        bidOrder.Slippage = oldArbitrage.BidPair.Slippage;
-                                        bidOrder.Process = OrderProcess.PREPARED;
+                                            Order bidOrder = TradeManager.orderManager.CreateOrder(oldArbitrage.BidPair, oldArbitrage, OrderType.OP_SELL, oldArbitrage.BidPair.Volume, oldArbitrage.CurrentPyramid);
+                                            bidOrder.SendedTime = DateTime.Now;
+                                            bidOrder.SendedPrice = oldArbitrage.BidPair.Bid;
+                                            bidOrder.Slippage = oldArbitrage.BidPair.Slippage;
+                                            bidOrder.Process = OrderProcess.PREPARED;
 
-                                        oldArbitrage.AskOrders.Add(askOrder);
-                                        oldArbitrage.BidOrders.Add(bidOrder);
+                                            oldArbitrage.AskOrders.Add(askOrder);
+                                            oldArbitrage.BidOrders.Add(bidOrder);
 
-                                        TradeManager.orderManager.AddOrder(askOrder);
-                                        TradeManager.orderManager.AddOrder(bidOrder);
+                                            TradeManager.orderManager.AddOrder(askOrder);
+                                            TradeManager.orderManager.AddOrder(bidOrder);
 
-                                        TradeManager.orderManager.SocketSend_OrderSend(askOrder);
-                                        TradeManager.orderManager.SocketSend_OrderSend(bidOrder);
+                                            TradeManager.orderManager.SocketSend_OrderSend(askOrder);
+                                            TradeManager.orderManager.SocketSend_OrderSend(bidOrder);
 
-                                        oldArbitrage.Update();
+                                            oldArbitrage.Update();
+                                        }
                                     }
                                 }
-
                             }
+                            
                         }
                     }
                 }
