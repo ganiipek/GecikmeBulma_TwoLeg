@@ -92,17 +92,17 @@ namespace GecikmeBulma.Trade
 
         public double GetProfit()
         {
-            return AskOrders.Sum(_order => _order.GetProfit()) + BidOrders.Sum(_order => _order.GetProfit());
+            return Math.Round(AskOrders.Sum(_order => _order.GetProfit()) + BidOrders.Sum(_order => _order.GetProfit()), 2);
         }
 
         public double GetTotalLongVolume()
         {
-            return AskOrders.Sum(_order => _order.Volume);
+            return Math.Round(AskOrders.Sum(_order => _order.Volume), 2);
         }
 
         public double GetTotalShortVolume()
         {
-            return BidOrders.Sum(_order => _order.Volume);
+            return Math.Round(BidOrders.Sum(_order => _order.Volume), 2);
         }
     }
 }
