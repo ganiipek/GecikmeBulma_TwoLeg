@@ -393,6 +393,15 @@ namespace GecikmeBulma
         {
             listView3.Items.Clear();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (dataGridView4.SelectedRows.Count > 0)
+            {
+                int arbitrageId = Convert.ToInt32(dataGridView4.SelectedRows[0].Cells[0].Value);
+                UI.UIManager.arbitrageForceClose(arbitrageId);
+            }
+        }
     }
 
     public class ListViewNF : System.Windows.Forms.ListView

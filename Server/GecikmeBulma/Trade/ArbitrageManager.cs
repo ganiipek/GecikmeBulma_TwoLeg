@@ -125,6 +125,12 @@ namespace GecikmeBulma.Trade
             }
         }
 
+        public void CloseArbitrage(int arbitrageId)
+        {
+            Arbitrage arbitrage = GetArbitrage(arbitrageId);
+            if(arbitrage != null) CloseArbitrage(arbitrage);
+        }
+
         public void FindArbitrage(Pair pair)
         {
             Arbitrage newArbitrage = CheckArbitrage(pair.Symbol);
@@ -268,7 +274,7 @@ namespace GecikmeBulma.Trade
                     }
                 }
 
-                Thread.Sleep(1000);
+                Thread.Sleep(250);
             }
         }
 

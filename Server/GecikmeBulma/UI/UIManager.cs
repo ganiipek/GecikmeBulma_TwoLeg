@@ -166,5 +166,10 @@ namespace GecikmeBulma.UI
             broker.AutoTrade = value;
         }
 
+
+        static public void arbitrageForceClose(int arbitrageId)
+        {
+            Trade.TradeManager.arbitrageManager.CloseArbitrage(arbitrageId);
+        }
     }
 }
