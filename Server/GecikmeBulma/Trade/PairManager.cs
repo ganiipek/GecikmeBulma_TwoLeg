@@ -19,7 +19,7 @@ namespace GecikmeBulma.Trade
         {
             lock (pairs)
             {
-                if (!pairs.Exists(local_pair => local_pair == pair))
+                if (!pairs.Exists(local_pair => local_pair.Id == pair.Id))
                 {
                     pairs.Add(pair);
                     UI.UIManager.dataGridView1_AddItem(pair);
