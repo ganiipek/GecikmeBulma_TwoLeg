@@ -457,7 +457,7 @@ namespace GecikmeBulma.Database
                     conn.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        string query = "INSERT INTO orders (arbitrage_id, pair_id, sended_time, sended_price, type, volume, slippage, process, step) VALUES (@arbitrage_id, @pair_id, @sended_time, @sended_price, @type, @volume, @slippage, @process, @step); SELECT LAST_INSERT_ID();";
+                        string query = "INSERT INTO orders (arbitrage_id, pair_id, sended_time, sended_price, type_id, volume, slippage, process, step) VALUES (@arbitrage_id, @pair_id, @sended_time, @sended_price, @type_id, @volume, @slippage, @process, @step); SELECT LAST_INSERT_ID();";
 
                         cmd.Connection = conn;
                         cmd.CommandText = query;
@@ -465,7 +465,7 @@ namespace GecikmeBulma.Database
                         cmd.Parameters.AddWithValue("pair_id", order.Pair.Id);
                         cmd.Parameters.AddWithValue("sended_time", order.SendedTime);
                         cmd.Parameters.AddWithValue("sended_price", order.SendedPrice);
-                        cmd.Parameters.AddWithValue("type", order.Type);
+                        cmd.Parameters.AddWithValue("type_id", order.Type);
                         cmd.Parameters.AddWithValue("volume", order.Volume);
                         cmd.Parameters.AddWithValue("slippage", order.Slippage);
                         cmd.Parameters.AddWithValue("process", order.Process);
@@ -503,7 +503,7 @@ namespace GecikmeBulma.Database
                         cmd.Parameters.AddWithValue("open_price", order.OpenPrice);
                         cmd.Parameters.AddWithValue("closed_time", order.ClosedTime);
                         cmd.Parameters.AddWithValue("closed_price", order.ClosedPrice);
-                        cmd.Parameters.AddWithValue("type", order.Type);
+                        cmd.Parameters.AddWithValue("type_id", order.Type);
                         cmd.Parameters.AddWithValue("volume", order.Volume);
                         cmd.Parameters.AddWithValue("slippage", order.Slippage);
                         cmd.Parameters.AddWithValue("commission", order.Commission);
