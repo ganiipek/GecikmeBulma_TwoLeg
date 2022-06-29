@@ -673,7 +673,7 @@ namespace GecikmeBulma.Trade
                     }
                 }
                 //Console.WriteLine("orders count: " + orders.Count.ToString());
-                Thread.Sleep(1000);
+                Thread.Sleep(250);
             }
         }
 
