@@ -11,7 +11,7 @@ namespace GecikmeBulma.Trade
 {
     internal class PairManager
     {
-        public List<Pair> pairs = new List<Pair>(); // .ConvertAll(x => (PairSettings)x)
+        static List<Pair> pairs = new List<Pair>(); // .ConvertAll(x => (PairSettings)x)
 
         public int arbitrageId = 0;
 
