@@ -193,11 +193,12 @@ namespace GecikmeBulma.Trade
             order.SendedTime = DateTime.Now;
             order.Update();
 
-            string request = String.Format("\"router\":\"{0}\",\"order_id\":\"{1}\",\"trade_type\":\"{2}\",\"volume\":\"{3}\"",
+            string request = String.Format("\"router\":\"{0}\",\"order_id\":\"{1}\",\"trade_type\":\"{2}\",\"volume\":\"{3}\",\"arbitrage_id\":\"{4}\"",
                 "order_send",
                 order.Id.ToString(),
                 ((int)order.Type).ToString(),
-                order.Volume.ToString().Replace(',', '.')
+                order.Volume.ToString().Replace(',', '.'),
+                order.Arbitrage.Id.ToString()
                 );
 
             BaseClient baseClient = TradeManager.clientManager.Get(order.Pair, ClientType.ORDER);
@@ -595,6 +596,33 @@ namespace GecikmeBulma.Trade
             }
         }
 
+        public void SocketReceive_ArbitrageTickUpdate(TcpClient client, dynamic json_data)
+        {
+            int arbitrageId = (int)json_data.arbitrage_id;
+            int pairId = (int)json_data.pair_id;
+            double profit = (double)json_data.profit;
+
+            Arbitrage arbitrage = TradeManager.arbitrageManager.GetArbitrage(arbitrageId);
+            if(arbitrage == null)
+            {
+                string debug = String.Format("OrderManager (SocketReceive_ArbitrageTickUpdate) --> Arbitrage '#{0}' is not found!",
+                        arbitrageId.ToString()
+                    );
+                Utils.SendLog(LoggerService.LoggerType.WARNING, debug);
+            }
+            else
+            {
+                if(arbitrage.AskPair.Id == pairId)
+                {
+                    arbitrage.AskPairProfit = profit;
+                }
+                else if(arbitrage.BidPair.Id == pairId)
+                {
+                    arbitrage.BidPairProfit = profit;
+                }
+            }
+        }
+
         void Controller()
         {
             string debug = "Order Manager Controller Starting...";
@@ -673,7 +701,7 @@ namespace GecikmeBulma.Trade
                     }
                 }
                 //Console.WriteLine("orders count: " + orders.Count.ToString());
-                Thread.Sleep(250);
+                Thread.Sleep(1000);
             }
         }
 

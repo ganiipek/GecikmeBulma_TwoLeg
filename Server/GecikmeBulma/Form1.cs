@@ -351,7 +351,6 @@ namespace GecikmeBulma
                         if (row.Cells[0].Value.ToString() == arbitrage.Id.ToString())
                         {
                             dataGridView4.Rows.RemoveAt(row.Index);
-                            break;
                         }
                     }
                 }));

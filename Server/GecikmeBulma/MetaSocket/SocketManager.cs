@@ -214,6 +214,10 @@ namespace GecikmeBulma.MetaSocket
                 {
                     TradeManager.orderManager.SocketReceive_OrderTickUpdate(client, json_data);
                 }
+                else if (json_data.type == "arbitrage_profit_update")
+                {
+                    TradeManager.orderManager.SocketReceive_ArbitrageTickUpdate(client, json_data);
+                }
                 else if (json_data.type == "order_close")
                 {
                     TradeManager.orderManager.SocketReceive_OrderClose(client, json_data);

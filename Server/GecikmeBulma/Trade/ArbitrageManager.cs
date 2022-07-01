@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GecikmeBulma.MetaSocket;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -106,21 +107,52 @@ namespace GecikmeBulma.Trade
             return null;
         }
 
+        bool CloseArbitrageByPair(Arbitrage arbitrage, Pair pair)
+        {
+            string request = String.Format("\"router\":\"{0}\",\"arbitrage_id\":\"{1}\"",
+                    "order_close_arbitrage_id",
+                    arbitrage.Id.ToString()
+                );
+
+            BaseClient baseClient = TradeManager.clientManager.Get(pair, ClientType.ORDER);
+            if (baseClient == null)
+            {
+                string debug = String.Format("ArbitrageManager (SocketSend_ArbitrageClose) --> The baseClient is not found. Arbitrage Id: {0}, Pair: {1}",
+                        arbitrage.Id.ToString(),
+                        pair.ToString()
+                    );
+                Utils.SendLog(LoggerService.LoggerType.WARNING, debug);
+
+                return false;
+            }
+            else
+            {
+                TradeManager.orderSocketManager.Send(baseClient.Client, request);
+
+                string debug = String.Format("ArbitrageManager (SocketSend_ArbitrageClose) --> Arbitrage Id: {0}, Pair: {1}",
+                            arbitrage.Id.ToString(),
+                            pair.ToString()
+                        );
+                Utils.SendLog(LoggerService.LoggerType.DEBUG, debug);
+
+                return true;
+            }
+        }
+
         public void CloseArbitrage(Arbitrage arbitrage)
         {
-            arbitrage.ClosedProcess = true;
-
-            List<Order> askOrders = arbitrage.AskOrders.FindAll(_order => _order.Process != OrderProcess.CLOSED && _order.Process != OrderProcess.SEND_CLOSE);
-            List<Order> bidOrders = arbitrage.BidOrders.FindAll(_order => _order.Process != OrderProcess.CLOSED && _order.Process != OrderProcess.SEND_CLOSE);
-
-            List<Order> orders = askOrders.Concat(bidOrders).ToList();
-
-            foreach (Order order in orders)
+            if((DateTime.Now - arbitrage.LastError).TotalSeconds >= 1)
             {
-                if (order.Process != OrderProcess.SEND_CLOSE && order.Process != OrderProcess.CLOSED)
+                if (CloseArbitrageByPair(arbitrage, arbitrage.AskPair) && CloseArbitrageByPair(arbitrage, arbitrage.BidPair))
                 {
-                    TradeManager.orderManager.CloseOrder(order);
-                    TradeManager.SendLog(LoggerService.LoggerType.SUCCESS, arbitrage, order.Pair, "ArbitrageManager-FindArbitrage", "(Arbitrage ID: " + arbitrage.Id.ToString() + ") Arbitrage bitti. Order kapanma emri gönderildi!");
+                    string debug = String.Format("(Arbitrage ID: {0}) Arbitrage kapatılıyor.",
+                        arbitrage.Id.ToString()
+                        );
+
+                    TradeManager.SendLog(LoggerService.LoggerType.DEBUG, arbitrage, arbitrage.AskPair, "ArbitrageManager-FindArbitrage", debug);
+
+                    arbitrage.ClosedProcess = true;
+                    arbitrage.LastError = DateTime.Now;
                 }
             }
         }

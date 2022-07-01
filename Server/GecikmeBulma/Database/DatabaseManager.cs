@@ -367,7 +367,7 @@ namespace GecikmeBulma.Database
                                     order.Pair = TradeManager.pairManager.GetPair(rdr.GetInt32(rdr.GetOrdinal("pair_id")));
                                     order.Type = (OrderType)rdr.GetInt32(rdr.GetOrdinal("type_id"));
                                     order.Process = (OrderProcess)rdr.GetInt32(rdr.GetOrdinal("process_id"));
-                                    order.Error = (OrderError)rdr.GetInt32(rdr.GetOrdinal("error_id"));
+                                    //order.Error = (OrderError)rdr.GetInt32(rdr.GetOrdinal("error_id"));
                                     order.Ticket = rdr.GetInt32(rdr.GetOrdinal("ticket"));
                                     order.SendedTime = rdr.GetDateTime(rdr.GetOrdinal("sended_time"));
                                     order.SendedPrice = rdr.GetDouble(rdr.GetOrdinal("sended_price"));
@@ -421,7 +421,7 @@ namespace GecikmeBulma.Database
                                     order.Pair = TradeManager.pairManager.GetPair(rdr.GetInt32(rdr.GetOrdinal("pair_id")));
                                     order.Type = (OrderType)rdr.GetInt32(rdr.GetOrdinal("type_id"));
                                     order.Process = (OrderProcess)rdr.GetInt32(rdr.GetOrdinal("process_id"));
-                                    order.Error = (OrderError)rdr.GetInt32(rdr.GetOrdinal("error_id"));
+                                    //order.Error = (OrderError)rdr.GetInt32(rdr.GetOrdinal("error_id"));
                                     order.Ticket = rdr.GetInt32(rdr.GetOrdinal("ticket"));
                                     order.SendedTime = rdr.GetDateTime(rdr.GetOrdinal("sended_time"));
                                     order.SendedPrice = rdr.GetDouble(rdr.GetOrdinal("sended_price"));
@@ -457,7 +457,7 @@ namespace GecikmeBulma.Database
                     conn.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        string query = "INSERT INTO orders (arbitrage_id, pair_id, sended_time, sended_price, type_id, volume, slippage, process, step) VALUES (@arbitrage_id, @pair_id, @sended_time, @sended_price, @type_id, @volume, @slippage, @process, @step); SELECT LAST_INSERT_ID();";
+                        string query = "INSERT INTO orders (arbitrage_id, pair_id, sended_time, sended_price, type_id, volume, slippage, process_id, step) VALUES (@arbitrage_id, @pair_id, @sended_time, @sended_price, @type_id, @volume, @slippage, @process_id, @step); SELECT LAST_INSERT_ID();";
 
                         cmd.Connection = conn;
                         cmd.CommandText = query;
@@ -468,7 +468,7 @@ namespace GecikmeBulma.Database
                         cmd.Parameters.AddWithValue("type_id", order.Type);
                         cmd.Parameters.AddWithValue("volume", order.Volume);
                         cmd.Parameters.AddWithValue("slippage", order.Slippage);
-                        cmd.Parameters.AddWithValue("process", order.Process);
+                        cmd.Parameters.AddWithValue("process_id", order.Process);
                         cmd.Parameters.AddWithValue("step", order.Step);
 
                         cmd.ExecuteNonQuery();
@@ -488,7 +488,7 @@ namespace GecikmeBulma.Database
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         string query = @"UPDATE orders 
-                        SET ticket=@ticket, sended_time=@sended_time, sended_price=@sended_price, open_time=@open_time, open_price=@open_price, closed_time=@closed_time, closed_price=@closed_price, volume=@volume, commission=@commission, swap=@swap, profit=@profit, process=@process
+                        SET ticket=@ticket, sended_time=@sended_time, sended_price=@sended_price, open_time=@open_time, open_price=@open_price, closed_time=@closed_time, closed_price=@closed_price, volume=@volume, commission=@commission, swap=@swap, profit=@profit, process_id=@process_id
                         WHERE id=@id";
                         //WHERE arbitrage_id=@arbitrage_id AND type=@type AND (ticket IS NULL OR ticket = @ticket)";
 
@@ -509,7 +509,7 @@ namespace GecikmeBulma.Database
                         cmd.Parameters.AddWithValue("commission", order.Commission);
                         cmd.Parameters.AddWithValue("swap", order.Swap);
                         cmd.Parameters.AddWithValue("profit", order.Profit);
-                        cmd.Parameters.AddWithValue("process", order.Process);
+                        cmd.Parameters.AddWithValue("process_id", order.Process);
 
                         cmd.ExecuteNonQuery();
                     }

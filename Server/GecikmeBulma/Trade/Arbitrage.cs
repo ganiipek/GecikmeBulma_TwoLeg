@@ -27,6 +27,8 @@ namespace GecikmeBulma.Trade
         public int CurrentPyramid { get; set; }
         public int MaxPyramid { get; set; }
         public double TargetProfit { get; set; }
+        public double AskPairProfit { get; set; }
+        public double BidPairProfit { get; set; }
         public List<Order> AskOrders { get; set; }
         public List<Order> BidOrders { get; set; }
         public DateTime LastError { get; set; }
@@ -39,6 +41,8 @@ namespace GecikmeBulma.Trade
             CurrentPyramid = 1;
             MaxPyramid = 5;
             TargetProfit = 20;
+            AskPairProfit = 0;
+            BidPairProfit = 0;
             ClosedProcess = false;
         }
 
@@ -92,7 +96,8 @@ namespace GecikmeBulma.Trade
 
         public double GetProfit()
         {
-            return Math.Round(AskOrders.Sum(_order => _order.GetProfit()) + BidOrders.Sum(_order => _order.GetProfit()), 2);
+            //return Math.Round(AskOrders.Sum(_order => _order.GetProfit()) + BidOrders.Sum(_order => _order.GetProfit()), 2);
+            return Math.Round(AskPairProfit + BidPairProfit, 2);
         }
 
         public double GetTotalLongVolume()
