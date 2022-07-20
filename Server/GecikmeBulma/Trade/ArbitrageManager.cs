@@ -306,13 +306,13 @@ namespace GecikmeBulma.Trade
                     }
                 }
 
-                Thread.Sleep(250);
+                Thread.Sleep(100);
             }
         }
 
         public void ControllerStart()
         {
-            new Thread(new ThreadStart(Controller)).Start();
+            //new Thread(new ThreadStart(Controller)).Start();
         }
     }
 }

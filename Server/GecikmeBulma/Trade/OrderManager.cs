@@ -620,6 +620,11 @@ namespace GecikmeBulma.Trade
                 {
                     arbitrage.BidPairProfit = profit;
                 }
+
+                if (UI.UIManager.dataGridView_Trades_UpdateItem(arbitrage))
+                {
+                    UI.UIManager.dataGridView_Trades_AddItem(arbitrage);
+                }
             }
         }
 

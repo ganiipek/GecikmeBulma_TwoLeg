@@ -299,23 +299,37 @@ namespace GecikmeBulma
             dataGridView4.BeginInvoke(
                 new Action(delegate ()
                 {
-                    string askBrokerName = arbitrage.AskPair.Broker.Name;
-                    string bidBrokerName = arbitrage.BidPair.Broker.Name;
+                    bool isExist = false;
 
-                    if (askBrokerName.Length > 10) askBrokerName = askBrokerName.Substring(0, 10);
-                    if (bidBrokerName.Length > 10) bidBrokerName = bidBrokerName.Substring(0, 10);
+                    foreach (DataGridViewRow row in dataGridView4.Rows)
+                    {
+                        if (row.Cells[0].Value.ToString() == arbitrage.Id.ToString())
+                        {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                        
+                    if(!isExist)
+                    {
+                        string askBrokerName = arbitrage.AskPair.Broker.Name;
+                        string bidBrokerName = arbitrage.BidPair.Broker.Name;
 
-                    int rowId = dataGridView4.Rows.Add(
-                        arbitrage.Id.ToString(),
-                        arbitrage.AskPair.Symbol,
-                        askBrokerName + Environment.NewLine + bidBrokerName, 
-                        arbitrage.GetTotalLongVolume().ToString() + Environment.NewLine + arbitrage.GetTotalShortVolume().ToString(),
-                        arbitrage.Created.ToString("HH:mm:ss"),
-                        arbitrage.GetProfit().ToString()
-                    );
+                        if (askBrokerName.Length > 10) askBrokerName = askBrokerName.Substring(0, 10);
+                        if (bidBrokerName.Length > 10) bidBrokerName = bidBrokerName.Substring(0, 10);
 
-                    DataGridViewRow row = dataGridView4.Rows[rowId];
-                    row.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                        int rowId = dataGridView4.Rows.Add(
+                            arbitrage.Id.ToString(),
+                            arbitrage.AskPair.Symbol,
+                            askBrokerName + Environment.NewLine + bidBrokerName,
+                            arbitrage.GetTotalLongVolume().ToString() + Environment.NewLine + arbitrage.GetTotalShortVolume().ToString(),
+                            arbitrage.Created.ToString("HH:mm:ss"),
+                            arbitrage.GetProfit().ToString()
+                        );
+
+                        DataGridViewRow dataGridViewRow = dataGridView4.Rows[rowId];
+                        dataGridViewRow.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    }
                 }));
         }
 
